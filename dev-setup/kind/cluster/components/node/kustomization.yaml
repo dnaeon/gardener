@@ -29,6 +29,10 @@ patches:
             registryPullQPS: 10
             registryBurst: 20
             serverTLSBootstrap: true
+            featureGates:
+              ClusterTrustBundle: true
+              ClusterTrustBundleProjection: true
+              PodCertificateRequest: true
   target:
     group: kind.x-k8s.io
     kind: Cluster
@@ -48,13 +52,13 @@ patches:
         kind: ClusterConfiguration
         apiServer:
           extraArgs:
-            feature-gates: "MutatingAdmissionPolicy=true"
-            runtime-config: "admissionregistration.k8s.io/v1alpha1=true,admissionregistration.k8s.io/v1beta1=true"
+            feature-gates: "MutatingAdmissionPolicy=true,PodCertificateRequest=true,ClusterTrustBundle=true,ClusterTrustBundleProjection=true"
+            runtime-config: "admissionregistration.k8s.io/v1alpha1=true,admissionregistration.k8s.io/v1beta1=true,certificates.k8s.io/v1beta1=true"
         controllerManager:
           extraArgs:
             # TODO(LucaBernstein): Remove once kind uses a Kubernetes version that includes the fix for
             # https://github.com/kubernetes/kubernetes/issues/137409 (MaxUnavailableStatefulSet deadlock).
-            feature-gates: "MaxUnavailableStatefulSet=false"
+            feature-gates: "MaxUnavailableStatefulSet=false,ClusterTrustBundle=true,ClusterTrustBundleProjection=true,PodCertificateRequest=true"
   target:
     group: kind.x-k8s.io
     kind: Cluster
